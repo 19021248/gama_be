@@ -1,5 +1,4 @@
 
-git clone https://gitlab.com/namtranpt00/gamabe.git
 
 download file https://drive.google.com/drive/folders/1ZOGt2t6zG8STnWR5WLxdMabHEtsDEMJa?usp=share_link
 Copy thư mục gama ra Project chính
