@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Forum\ForumController;
+use App\Http\Controllers\Api\Forum\ReplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -45,3 +47,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('user/{id}', [ AuthController::class, 'userinfo' ]);
     Route::post('user/update/{id}', [ AuthController::class, 'update' ]);
 });
+
+Route::resource('forum/reply', ReplyController::class);
+Route::resource('forum', ForumController::class);
