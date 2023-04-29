@@ -2,6 +2,6 @@
 /vendor/*
 .idea/
 /GAMA/*
-# .env
+.env
 composer.lock
 GAMA.zip
