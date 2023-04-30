@@ -17,8 +17,13 @@ class Topic extends Model
         'status'
     ];
 
-    public function users()
+    // public function users()
+    // {
+    //     return $this->belongsToMany(User::class, 'bookmarks', 'topic_id', 'created_by');
+    // }
+ 
+    public function bookmarks()
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
+        return $this->hasMany(Bookmark::class, 'topic_id', 'id');
     }
 }

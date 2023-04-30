@@ -14,6 +14,7 @@ class ForumService extends BaseService
 
     public function getTopics($params)
     {
+        $userId = $params['user_id'];
         $topics = $this->model::orderBy('created_at', 'desc');
 
         if(isset($params['status'])) {
@@ -22,6 +23,12 @@ class ForumService extends BaseService
 
         if(isset($params['created_by'])) {
             $topics = $topics->where('created_by', $params['created_by']);
+        }
+
+        if(isset($params['bookmarked']) && isset($params['user_id']) && $params['bookmarked']) {
+            $topics = $topics->whereHas('bookmarks', function ($query) use ($userId) {
+                $query->where('created_by', $userId);
+            });
         }
 
         if(isset($params['cate_id'])) {
