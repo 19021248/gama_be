@@ -29,7 +29,9 @@ class ModelController extends Controller
         fwrite($handle, $xmlfile);
         fclose($handle);
         $resultDir = $simulation_id . '_outputHeadLess';
-        exec('cd ../GAMA/headless; bash gama-headless.sh ' . $user_id . '_template_run.xml ' . $resultDir, $output, $retval);
+        exec('cd ../GAMA/headless; touch example.txt', $output , $retval);
+        $command = 'cd ../GAMA/headless;bash ./gama-headless.sh '.$user_id.'_template_run.xml '. $resultDir;
+        exec($command . ' 2>&1', $output, $retval);
 
         $dir = '/var/www/GAMA/headless/' . $simulation_id . '_outputHeadLess/snapshot/*';
         if (glob($dir)) {
@@ -71,6 +73,8 @@ class ModelController extends Controller
         } else {
             $response = [
                 'success' => false,
+                'output' => $output,
+                'command' => $command,
                 'message' => "Something went wrong! Please contact admin!"
             ];
             return response($response, 400);
