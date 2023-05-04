@@ -20,6 +20,10 @@ class ResearchService extends BaseService
             $researchs = $researchs->where('created_by', $params['created_by']);
         }
 
+        if(isset($params['cate_id'])) {
+            $researchs = $researchs->where('cate_id', $params['cate_id']);
+        }
+
         return $researchs->get();   
     }
 
