@@ -9,5 +9,5 @@ class Research extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content', 'name', 'created_by'];
+    protected $fillable = ['content', 'name', 'created_by', 'cate_id'];
 }

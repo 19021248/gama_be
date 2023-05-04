@@ -24,22 +24,25 @@ class ModelController extends Controller
         $project = Project::where("id", $model->project_id)->first();
         $xmlfile = file_get_contents($request->xmlfile);
         $data = [];
+        //ghi đè xml từ request vào template run 
         $my_file = '../GAMA/headless/' . $user_id . '_template_run.xml';
         $handle = fopen($my_file, 'w');
         fwrite($handle, $xmlfile);
         fclose($handle);
         $resultDir = $simulation_id . '_outputHeadLess';
-        exec('cd ../GAMA/headless; touch example.txt', $output , $retval);
+        // run command headless
         $command = 'cd ../GAMA/headless;bash ./gama-headless.sh '.$user_id.'_template_run.xml '. $resultDir;
         exec($command . ' 2>&1', $output, $retval);
-
+        //get image after run headless 
         $dir = '/var/www/GAMA/headless/' . $simulation_id . '_outputHeadLess/snapshot/*';
+        //không có ảnh thì return 400
         if (glob($dir)) {
             Snapshot::where("simulation_id", $simulation_id)->delete();
             Storage::disk('s3')->delete('snapshots/' . $simulation_id);
             $list = glob($dir);
             natsort($list);
             foreach ($list as $file) {
+                //put từng ảnh lên s3 đồng thời tạo bản ghi snapshot
                 $file_name = str_replace('/var/www/GAMA/headless/' . $simulation_id . '_outputHeadLess/snapshot/', '', $file);
                 $url = Storage::disk('s3')->putFileAs('snapshots/' . $simulation_id, $file, $file_name);
                 $url = Storage::disk('s3')->url($url);
@@ -52,6 +55,7 @@ class ModelController extends Controller
             }
             $output_names = Snapshot::where('simulation_id', $simulation_id)->distinct()->pluck('name');
             foreach ($output_names as $output_name) {
+                //data respose
                 $urls = Snapshot::where('simulation_id', $simulation_id)->where('name', $output_name)->pluck('url');;
                 array_push($data, (object)[
                     'name' => $output_name,
